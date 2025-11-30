@@ -1,4 +1,4 @@
-# Comparative Analysis of YOLOv11 and Vision Transformers for Leukocyte Classification
+# Comparative Analysis of Convolutional and Vision Transformer Models for Automated Leukocyte Classification Enhanced by Generative Color Augmentation
 
 ![Python](https://img.shields.io/badge/python-3.10-blue.svg)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)
