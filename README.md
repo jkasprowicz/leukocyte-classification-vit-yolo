@@ -76,7 +76,7 @@ The models were evaluated on an independent test set. The metrics below represen
   title = {Structure-Preserving Multi-Domain Stain Color Augmentation using Style-Transfer with Disentangled Representations},
   year = {2021}
 }
-
+```
 
 
 ### 1. Clone the repository
