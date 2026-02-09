@@ -68,14 +68,15 @@ The models were evaluated on an independent test set. The metrics below represen
 * Python 3.10+
 * CUDA 11.8+ (for GPU acceleration)
 
-
 ### References
+```bash
 @inproceedings{HistAuGAN,
   author = {Wagner, S. J., Khalili, N., Sharma, R., Boxberg, M., Marr, C., de Back, W., Peng, T.},
   booktitle = {Medical Image Computing and Computer Assisted Intervention – MICCAI 2021},
   title = {Structure-Preserving Multi-Domain Stain Color Augmentation using Style-Transfer with Disentangled Representations},
   year = {2021}
 }
+
 
 
 ### 1. Clone the repository
