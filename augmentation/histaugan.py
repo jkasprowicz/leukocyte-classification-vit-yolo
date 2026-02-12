@@ -1,6 +1,5 @@
 !git clone https://github.com/sophiajw/HistAuGAN
 
-conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 %cd /lapix/HistAuGAN
 
 %load_ext autoreload
