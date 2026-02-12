@@ -158,7 +158,7 @@ for fold, (train_idx, val_idx) in enumerate(
     num_classes = len(valid_class_cols)
 
     model = timm.create_model(
-        "vit_small_patch16_384",
+        "vit_small_patch16_384", # ou vit_base_patch16_384
         pretrained=True,
         num_classes=num_classes
     ).to(device)
