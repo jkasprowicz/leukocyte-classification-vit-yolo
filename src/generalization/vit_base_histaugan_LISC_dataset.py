@@ -21,7 +21,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # =========================================================
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-MODEL_WEIGHTS = "/lapix/vit_fold_1_best_base.pth"  # ajuste se necessário
+MODEL_WEIGHTS = "/lapix/vit_fold_1_best_base.pth"  # ajuste conforme modelo pré treinado (Vit_base_histaugan)
 IMAGE_SIZE = 384
 BATCH_SIZE = 1  # one-shot = 1 imagem por vez
 
