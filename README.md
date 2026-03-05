@@ -185,7 +185,7 @@ pip install -r requirements.txt
 
 📌 Conclusion
 Vision Transformers demonstrated superior performance in limited-data scenarios.
-The incorporation of HistAuGAN significantly boosted performance across all architectures and reduced statistical differences between CNN-based and Transformer-based models.
+The incorporation of HistAugit GAN significantly boosted performance across all architectures and reduced statistical differences between CNN-based and Transformer-based models.
 The integration of global attention mechanisms with domain-oriented augmentation represents a strong strategy for robust leukocyte classification systems in clinical environments.
 
 📖 Citation
