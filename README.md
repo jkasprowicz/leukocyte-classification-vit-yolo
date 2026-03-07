@@ -37,7 +37,8 @@ This study presents a systematic comparative evaluation between:
 - YOLOv11 (Nano, Small, Medium)  
 - Vision Transformers (ViT-Small, ViT-Base)
 
-for 14-class leukocyte and artifact classification using a private clinical dataset.
+for 14-class leukocyte and artifact classification using a public dataset published on zenodo:
+https://zenodo.org/records/17743609
 
 Additionally, we evaluate the impact of **HistAuGAN**, a generative adversarial stain augmentation strategy designed to simulate realistic inter-laboratory staining variability and improve domain robustness.
 
