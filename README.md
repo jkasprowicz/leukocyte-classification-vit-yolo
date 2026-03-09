@@ -17,7 +17,7 @@
 ## 👨‍🔬 Authors
 
 **João Kasprowicz**  
-Master degree student
+MSc Candidate
 
 **Alexandre Gonçalves Silva, PhD**  
 Professor and Research Advisor  
@@ -38,11 +38,14 @@ This study presents a systematic comparative evaluation between:
 - Vision Transformers (ViT-Small, ViT-Base)
 
 for 14-class leukocyte and artifact classification using a public dataset published on zenodo:
-https://zenodo.org/records/17743609
+[![Dataset DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17743609.svg)](https://zenodo.org/records/17743609)
 
 Additionally, we evaluate the impact of **HistAuGAN**, a generative adversarial stain augmentation strategy designed to simulate realistic inter-laboratory staining variability and improve domain robustness.
 
 ---
+## Pipeline
+
+![Pipeline](results/figures/pipeline.pdf)
 
 # 🎯 Main Contributions
 
@@ -59,8 +62,12 @@ Additionally, we evaluate the impact of **HistAuGAN**, a generative adversarial 
 
 ### Private Clinical Dataset
 
-- 4,471 smear images  
-- 5,011 annotated cells  
+Original dataset
+4,471 smear images
+
+After cell extraction and preprocessing
+11,651 cell images
+
 - 14 leukocyte and artifact categories  
 - Triple-review annotation protocol  
 - Ethics approval: UFSC (CAAE: 83684524.7.1001.0121)
@@ -175,6 +182,17 @@ NVIDIA HGX H100 (VLAB@UFSC)
 
 ---
 
+# 🔍 Model Explainability
+
+To analyze model decision patterns, we generated attention and activation maps using:
+
+• Attention Rollout for Vision Transformers  
+• EigenCAM for YOLOv11 architectures  
+
+These visualizations highlight the morphological regions most relevant to model predictions.
+
+Examples are provided in the dissertation appendix.
+
 # 🚀 Reproducibility
 
 ```bash
@@ -186,7 +204,7 @@ pip install -r requirements.txt
 
 📌 Conclusion
 Vision Transformers demonstrated superior performance in limited-data scenarios.
-The incorporation of HistAugit GAN significantly boosted performance across all architectures and reduced statistical differences between CNN-based and Transformer-based models.
+The incorporation of HistAuGAN significantly boosted performance across all architectures and reduced statistical differences between CNN-based and Transformer-based models.
 The integration of global attention mechanisms with domain-oriented augmentation represents a strong strategy for robust leukocyte classification systems in clinical environments.
 
 📖 Citation

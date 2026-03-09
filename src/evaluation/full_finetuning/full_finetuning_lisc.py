@@ -12,33 +12,35 @@ from PIL import Image
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
+
 # =========================
 # CONFIG
 # =========================
 
-DATASET_PATH = "pbc-dataset/PBC_dataset/PBC_dataset/wbc"
+LISC_PATH = "lisc_dataset/LISC Database/Main Dataset"
 MODEL_WEIGHTS_PATH = "/lapix/vit_fold_1_best_base.pth"
 
-NUM_CLASSES = 6
+NUM_CLASSES = 5
 N_SPLITS = 5
 
 IMG_SIZE = 384
 BATCH_SIZE = 16
-NUM_WORKERS = 4
+NUM_WORKERS = 0
 
 EPOCHS_LINEAR = 10
-EPOCHS_FINE = 25
+EPOCHS_FINE = 30
 
 LR_LINEAR = 1e-3
-LR_FINE = 3e-5
+LR_FINE = 1e-5
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
 
 # =========================
 # DATASET
 # =========================
 
-class PBCDataset(Dataset):
+class LISCDataset(Dataset):
 
     def __init__(self, root_dir, transform=None):
 
@@ -61,24 +63,33 @@ class PBCDataset(Dataset):
 
             self.class_to_idx[cls] = idx
 
-            for img_name in os.listdir(class_folder):
+            for root, _, files in os.walk(class_folder):
 
-                if img_name.lower().endswith((".jpg",".png",".jpeg")):
+                for img_name in files:
 
-                    img_path = os.path.join(class_folder, img_name)
+                    if img_name.lower().endswith(
+                        (".jpg",".png",".jpeg",".bmp")
+                    ):
 
-                    self.samples.append(img_path)
-                    self.labels.append(idx)
+                        img_path = os.path.join(root, img_name)
+
+                        self.samples.append(img_path)
+                        self.labels.append(idx)
 
         print("Classes:", self.class_to_idx)
+        print("Total samples:", len(self.samples))
+
 
     def __len__(self):
         return len(self.samples)
 
+
     def __getitem__(self, idx):
 
-        image = Image.open(self.samples[idx]).convert("RGB")
+        img_path = self.samples[idx]
         label = self.labels[idx]
+
+        image = Image.open(img_path).convert("RGB")
 
         if self.transform:
             image = self.transform(image)
@@ -106,9 +117,11 @@ transform = transforms.Compose([
 
 ])
 
-dataset = PBCDataset(DATASET_PATH, transform=transform)
+
+dataset = LISCDataset(LISC_PATH, transform=transform)
 
 targets = np.array(dataset.labels)
+
 
 # =========================
 # STRATIFIED K-FOLD
@@ -120,6 +133,7 @@ skf = StratifiedKFold(
     random_state=42
 )
 
+
 all_acc = []
 all_prec = []
 all_rec = []
@@ -127,12 +141,15 @@ all_f1 = []
 
 fold = 1
 
+
 for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
 
     print(f"\n===== FOLD {fold} =====")
 
+
     train_subset = Subset(dataset, train_idx)
     val_subset = Subset(dataset, val_idx)
+
 
     train_loader = DataLoader(
         train_subset,
@@ -148,6 +165,7 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
         num_workers=NUM_WORKERS
     )
 
+
     # =========================
     # MODEL
     # =========================
@@ -158,18 +176,21 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
         num_classes=14
     )
 
+
     state = torch.load(MODEL_WEIGHTS_PATH, map_location="cpu")
 
     state_dict = state["state_dict"] if "state_dict" in state else state
 
     model.load_state_dict(state_dict)
 
-    # Replace head for PBC
+
+    # Replace head for LISC
     model.head = nn.Linear(model.embed_dim, NUM_CLASSES)
 
     model = model.to(DEVICE)
 
     criterion = nn.CrossEntropyLoss()
+
 
     # =========================
     # PHASE 1 — LINEAR PROBING
@@ -181,12 +202,15 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
     for param in model.head.parameters():
         param.requires_grad = True
 
+
     optimizer = optim.Adam(
         model.head.parameters(),
         lr=LR_LINEAR
     )
 
+
     print("\n--- Linear Probing ---")
+
 
     for epoch in range(EPOCHS_LINEAR):
 
@@ -210,10 +234,12 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
 
             running_loss += loss.item()
 
+
         print(
             f"LP Epoch {epoch+1}/{EPOCHS_LINEAR} "
             f"Loss: {running_loss/len(train_loader):.4f}"
         )
+
 
     # =========================
     # PHASE 2 — FULL FINE TUNING
@@ -221,8 +247,10 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
 
     print("\n--- Full Fine Tuning ---")
 
+
     for param in model.parameters():
         param.requires_grad = True
+
 
     optimizer = torch.optim.AdamW(
         model.parameters(),
@@ -230,15 +258,18 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
         weight_decay=0.05
     )
 
+
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer,
         T_max=EPOCHS_FINE
     )
 
+
     for epoch in range(EPOCHS_FINE):
 
         model.train()
         running_loss = 0
+
 
         for images, labels in train_loader:
 
@@ -257,12 +288,15 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
 
             running_loss += loss.item()
 
+
         scheduler.step()
+
 
         print(
             f"FT Epoch {epoch+1}/{EPOCHS_FINE} "
             f"Loss: {running_loss/len(train_loader):.4f}"
         )
+
 
     # =========================
     # VALIDATION
@@ -272,6 +306,7 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
 
     preds_list = []
     labels_list = []
+
 
     with torch.no_grad():
 
@@ -287,6 +322,7 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
             preds_list.extend(preds.cpu().numpy())
             labels_list.extend(labels.cpu().numpy())
 
+
     acc = accuracy_score(labels_list, preds_list)
 
     prec = precision_score(labels_list, preds_list, average="macro")
@@ -295,10 +331,12 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
 
     f1 = f1_score(labels_list, preds_list, average="macro")
 
+
     print(f"Accuracy:  {acc:.4f}")
     print(f"Precision: {prec:.4f}")
     print(f"Recall:    {rec:.4f}")
     print(f"F1-score:  {f1:.4f}")
+
 
     all_acc.append(acc)
     all_prec.append(prec)
@@ -312,20 +350,9 @@ for train_idx, val_idx in skf.split(np.zeros(len(targets)), targets):
 # FINAL RESULTS
 # =========================
 
-print("\n===== FINAL RESULTS =====")
+print("\n===== FINAL RESULTS (LISC) =====")
 
-print(
-    f"Accuracy:  {np.mean(all_acc)*100:.2f} ± {np.std(all_acc)*100:.2f}"
-)
-
-print(
-    f"Precision: {np.mean(all_prec)*100:.2f} ± {np.std(all_prec)*100:.2f}"
-)
-
-print(
-    f"Recall:    {np.mean(all_rec)*100:.2f} ± {np.std(all_rec)*100:.2f}"
-)
-
-print(
-    f"F1-score:  {np.mean(all_f1)*100:.2f} ± {np.std(all_f1)*100:.2f}"
-)
+print(f"Accuracy:  {np.mean(all_acc)*100:.2f} ± {np.std(all_acc)*100:.2f}")
+print(f"Precision: {np.mean(all_prec)*100:.2f} ± {np.std(all_prec)*100:.2f}")
+print(f"Recall:    {np.mean(all_rec)*100:.2f} ± {np.std(all_rec)*100:.2f}")
+print(f"F1-score:  {np.mean(all_f1)*100:.2f} ± {np.std(all_f1)*100:.2f}")
