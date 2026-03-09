@@ -5,7 +5,7 @@ import pandas as pd
 # =============================
 # PATHS
 # =============================
-BASE_DIR = "/data/standard/"
+BASE_DIR = "/data/standard/" # Update this to your actual base directory containing train/valid/test folders
 
 SPLITS = ["train", "valid", "test"]
 

@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+title: Comparative Analysis of YOLOv11 and Vision Transformers for Leukocyte Classification
+authors:
+  - family-names: Kasprowicz
+    given-names: Joao
+  - family-names: Silva
+    given-names: Alexandre Goncalves
+year: 2026

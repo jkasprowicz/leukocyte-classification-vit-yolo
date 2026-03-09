@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pkl
+*.pt
+*.pth
+*.ckpt
+*.log
+runs/
+wandb/
+data/
+.env
+.DS_Store
