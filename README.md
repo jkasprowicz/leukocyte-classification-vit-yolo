@@ -210,44 +210,6 @@ Examples are provided in the dissertation appendix.
 
 ---
 
-# 📂 Repository Structure
-leukocyte-classification-vit-vs-yolo
-│
-├── data
-│ ├── raw
-│ ├── processed
-│ └── splits
-│
-├── scripts
-│ ├── download_dataset.py
-│ ├── prepare_dataset.py
-│ └── histaugan_aug.py
-│
-├── src
-│ ├── models
-│ │ ├── yolo
-│ │ │ └── train_yolo.py
-│ │ │
-│ │ └── vit
-│ │ └── train_vit.py
-│ │
-│ ├── evaluation
-│ │ ├── cross_validation.py
-│ │ └── ood_evaluation.py
-│ │
-│ └── utils
-│
-├── results
-│ ├── figures
-│ ├── tables
-│ └── checkpoints
-│
-├── requirements.txt
-└── README.md
-
-
----
-
 # ⚡ Quick Start
 
 Clone the repository:
@@ -283,6 +245,18 @@ YOLOv11-Medium
 🎨 HistAuGAN Augmentation
 To expand the training dataset with stain variability:
 python src/augmentations/histaugan.py
+```
+
+# 📄 Associated Publication
+```
+This repository is associated with a research manuscript currently under review at the journal *Signal, Image and Video Processing*.
+
+A preprint version of a related study is available at Research Square:
+
+https://www.researchsquare.com/article/rs-7926842/v1
+
+The preprint presents an earlier version of the experimental framework that partially overlaps with the methodology used in this repository.  
+The current repository reflects the expanded experimental protocol developed during the author's MSc dissertation at the Federal University of Santa Catarina (UFSC).
 ```
 
 📖 Citation
