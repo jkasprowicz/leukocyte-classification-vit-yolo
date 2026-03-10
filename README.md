@@ -47,7 +47,7 @@ Additionally, we evaluate the impact of **HistAuGAN**, a generative adversarial 
 # 🧪 Pipeline
 
 <p align="center">
-<img src="results/figures/pipeline.pdf" width="800">
+<img src="results/figures/pipeline.png" width="800">
 </p>
 
 ---
